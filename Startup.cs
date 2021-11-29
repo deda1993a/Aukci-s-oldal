@@ -39,11 +39,17 @@ namespace aukcio
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/",  context =>
+                {
+                    context.Response.Redirect("/index.html", permanent:false);
+                    return Task.FromResult(0);
+                });                
                 endpoints.MapControllers();
             });
         }

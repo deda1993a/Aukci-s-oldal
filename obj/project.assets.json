@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\demet\\vscode\\aukcio\\aukcio.csproj",
+      "projectUniqueName": "C:\\Users\\demet\\vscodegit\\Aukci-s-oldal\\aukcio.csproj",
       "projectName": "aukcio",
-      "projectPath": "C:\\Users\\demet\\vscode\\aukcio\\aukcio.csproj",
+      "projectPath": "C:\\Users\\demet\\vscodegit\\Aukci-s-oldal\\aukcio.csproj",
       "packagesPath": "C:\\Users\\demet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\demet\\vscode\\aukcio\\obj\\",
+      "outputPath": "C:\\Users\\demet\\vscodegit\\Aukci-s-oldal\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\demet\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -32,6 +32,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "projectReferences": {}
         }
       },
@@ -43,6 +44,7 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
         "imports": [
           "net461",
           "net462",
@@ -61,7 +63,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }
