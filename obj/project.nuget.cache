@@ -1,8 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "tXwSio1WLRhCOupPxkIQ4E2rd+zJEw+Hk6HBkJi5/4OTh5yFgMXxu0YPAUh5UQRQX3K5PKzvu8uz1Q3eaybaag==",
+  "dgSpecHash": "Wd+AhTH2p21kXZNu1rO5qSYy30U/Jcwn/adIx9gvoZTZPeAUXRXXZNtJLAs9N0El09n7FbEmFTiahyWGnWRcQg==",
   "success": true,
   "projectFilePath": "C:\\Users\\demet\\vscodegit\\Aukci-s-oldal\\aukcio.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\demet\\.nuget\\packages\\microsoft.data.sqlite\\6.0.0\\microsoft.data.sqlite.6.0.0.nupkg.sha512",
+    "C:\\Users\\demet\\.nuget\\packages\\microsoft.data.sqlite.core\\6.0.0\\microsoft.data.sqlite.core.6.0.0.nupkg.sha512",
+    "C:\\Users\\demet\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.0.6\\sqlitepclraw.bundle_e_sqlite3.2.0.6.nupkg.sha512",
+    "C:\\Users\\demet\\.nuget\\packages\\sqlitepclraw.core\\2.0.6\\sqlitepclraw.core.2.0.6.nupkg.sha512",
+    "C:\\Users\\demet\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.0.6\\sqlitepclraw.lib.e_sqlite3.2.0.6.nupkg.sha512",
+    "C:\\Users\\demet\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.0.6\\sqlitepclraw.provider.e_sqlite3.2.0.6.nupkg.sha512",
+    "C:\\Users\\demet\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512"
+  ],
   "logs": []
 }
