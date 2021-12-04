@@ -12,10 +12,15 @@
 </head>
 <body>
     <form action="" method="post">
+        <label for="id">ID:</label>
+        <input type="number" id="id" name="id"><br><br>
         <label for="name">Név:</label>
         <input type="text" id="name" name="name" autocomplete="username"><br><br>
         <label for="password">Jelszó:</label>
         <input type="password" id="password" name="password" autocomplete="current-password"><br><br>
+        <label for="dob">Szuletes:</label>
+        <input type="number" name="dob" id="dob">
+
     </form>
         <button id="send" onclick="senddata()">Küld</button>
 
@@ -23,17 +28,23 @@
 
         <script>
             class Person{
-                constructor(name, password){
+                constructor(name, password, dob, id){
                     this.name=name;
                     this.password=password;
+                    this.id=parseInt(id);
+                    this.dob=parseInt(dob);
                 }
             }
 
             function senddata(){
                 var name=document.getElementById("name").value;
                 var password=document.getElementById("password").value;
+                var id=document.getElementById("id").value;
+                var dob=document.getElementById("dob").value;
 
-                var person=new Person(name, password);
+                var person=new Person(name, password, dob, id);
+
+                console.log(person.id);
 
                 $.post({
                   url: "/Person",
