@@ -16,7 +16,16 @@ namespace aukcio
 
 
             CreateHostBuilder(args).Build().Run();
+            /*PasswordHasher hasher=new PasswordHasher();
+            var hash=hasher.Encrypt("12345");
+            Console.WriteLine($"hash={{Salt: {hash.Salt}, Sha:{hash.Sha}");
 
+            if(hasher.Verify("12345", hash)){
+                Console.WriteLine("The Password is Correct");
+            }else{
+                Console.WriteLine("incorrect");
+            }
+            */
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

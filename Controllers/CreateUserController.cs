@@ -10,23 +10,27 @@ namespace aukcio.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PersonController : ControllerBase
+    public class CreateUserController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<PersonController> _logger;
+        private readonly ILogger<CreateUserController> _logger;
 
-        public PersonController(ILogger<PersonController> logger)
+        public CreateUserController(ILogger<CreateUserController> logger)
         {
             _logger = logger;
         }
 
 
 
-        public StatusCodeResult OnPost(Person person){
+        public StatusCodeResult OnPost(login.User user){
+
+            var hasher = new PasswordHasher();
+            var hash = hasher.Encrypt(user.Password);
+
             string cs= "Data Source=loggindata.db";
             using SqliteConnection conn=new SqliteConnection(cs);
             
@@ -35,17 +39,18 @@ namespace aukcio.Controllers
             string CommandText= @"
             insert into 
                 User
-                (`ID`, `Name`, `PWHash`,`DoB`)
+                (`Name`, `PWHash`,`PWSalt`,`DoB`)
                 values
-                (@ID, @Name, @PWHash, @DoB);";
+                (@Name, @PWHash, @PWSalt, @DoB);";
 
-            Console.WriteLine(person.ID);
+            //Console.WriteLine(user.ID);
             using var cmd = conn.CreateCommand();
             cmd.CommandText=CommandText;
-            cmd.Parameters.AddWithValue("@ID", person.ID);
-            cmd.Parameters.AddWithValue("@Name", person.Name);
-            cmd.Parameters.AddWithValue("@PWHash", person.Password);
-            cmd.Parameters.AddWithValue("@DoB", person.DoB);
+            //cmd.Parameters.AddWithValue("@ID", user.ID);
+            cmd.Parameters.AddWithValue("@Name", user.Name);
+            cmd.Parameters.AddWithValue("@PWHash", hash.Sha);
+            cmd.Parameters.AddWithValue("@PWSalt", hash.Salt);
+            cmd.Parameters.AddWithValue("@DoB", user.DoB);
             try{
             cmd.ExecuteNonQuery();
             }catch(Exception ex)

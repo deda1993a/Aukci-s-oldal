@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace aukcio
 {
@@ -51,6 +53,11 @@ namespace aukcio
                     return Task.FromResult(0);
                 });                
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "UploadUppy",
+                    pattern:"UploadUppy",
+                    defaults: new {controller="Upload", action= "OnPostUppy" }
+                    );               
             });
         }
     }
