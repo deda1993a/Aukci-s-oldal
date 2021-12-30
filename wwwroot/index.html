@@ -9,11 +9,36 @@
     src="https://code.jquery.com/jquery-3.6.0.js"
     integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
     crossorigin="anonymous"></script>
+    <script src="https://releases.transloadit.com/uppy/v2.3.0/uppy.min.js"></script>
+    <link href="https://releases.transloadit.com/uppy/v2.3.0/uppy.min.css" rel="stylesheet">    
+    <style>
+        #as{
+    
+    text-align: center;
+            }
+
+            #table01{
+  width: 100%;
+   border-collapse: collapse;
+   
+}       
+
+#table02{
+  width: 100%;
+   border-collapse: collapse;
+   
+}    
+
+table, td, th {
+  border: 1px solid black;
+}
+
+    </style>
+
 </head>
 <body>
     <form action="" method="post">
-        <label for="id">ID:</label>
-        <input type="number" id="id" name="id"><br><br>
+
         <label for="name">Név:</label>
         <input type="text" id="name" name="name" autocomplete="username"><br><br>
         <label for="password">Jelszó:</label>
@@ -22,33 +47,154 @@
         <input type="number" name="dob" id="dob">
 
     </form>
-        <button id="send" onclick="senddata()">Küld</button>
+        <button id="login" onclick="login()">Belepes</button>
+        <button id="register" onclick="register()">Regisztráció</button>
 
         <p id="ret"></p>
 
+        <div id="drag-drop-area"></div>
+        <table id="table01">
+            <tr>
+                <th>Targy</th>
+                <th>Elado</th>
+                <th>Veget er</th>
+                <th>Kep</th>
+            </tr>
+        </table>
+
+        <table id="table02">
+            <tr>
+                <th>Targy</th>
+                <th>Elado</th>
+                <th>Veget er</th>
+                <th>Kep</th>
+            </tr>
+        </table>       
+
         <script>
-            class Person{
-                constructor(name, password, dob, id){
+            class User{
+                constructor(name, password, dob){
                     this.name=name;
                     this.password=password;
-                    this.id=parseInt(id);
                     this.dob=parseInt(dob);
                 }
             }
 
-            function senddata(){
+            class Logged{
+                constructor(name, password, dob){
+                    this.name=name;
+                    this.password=password;
+                    this.dob=parseInt(dob);
+                }
+            }            
+
+            const { XHRUpload } = Uppy;
+
+/*var uppy = new Uppy.Core()
+
+.use(Uppy.Dashboard, {
+    inline: true,
+    target: `#drag-drop-area`,
+    width: 300,
+    height: 300
+})
+
+.use(Uppy.XHRUpload, {
+    endpoint: `/Upload`,
+    formData: true,
+    fieldName: "files"
+})
+
+uppy.on(`complete`, (result) => {
+    console.log("complete", result.succesfull);
+})   */         
+
+            function login(){
                 var name=document.getElementById("name").value;
                 var password=document.getElementById("password").value;
-                var id=document.getElementById("id").value;
                 var dob=document.getElementById("dob").value;
+                var user2=new Logged(name, password, dob);
 
-                var person=new Person(name, password, dob, id);
+                /*var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {          
+                    // Typical action to be performed when the document is ready:
+                    var lo = JSON.parse(this.responseText);
 
-                console.log(person.id);
+                        for(na of lo)
+                        {
+                            console.log(`${na.name}`);
+                        }
+
+                    }
+                };
+                xhttp.open("GET", "/LoginUser", true);
+                xhttp.send(); */             
 
                 $.post({
-                  url: "/Person",
-                  data: JSON.stringify(person),
+                  url: "/LoginUser",
+                  data: JSON.stringify(user2),
+                  success: function(data, status){
+                      if(status=="success"){
+                          document.getElementById("ret").innerHTML=JSON.stringify(data);
+                      }
+                  }
+                    , contentType: "application/json"
+                });
+
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {          
+                    // Typical action to be performed when the document is ready:
+                    var lo = JSON.parse(this.responseText);
+
+                        for(na of lo)
+                        {
+                            console.log(`${na.name}`);
+                        }
+
+                    }
+                };
+                xhttp.open("POST", "/LoginUser", true);
+                xhttp.send();              
+
+                var table01=document.getElementById("table01");
+                //document.getElementById('as').innerHTML+=`<table>`;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {          
+                    // Typical action to be performed when the document is ready:
+                    var lo = JSON.parse(this.responseText);
+                        
+                        for(na of lo)
+                        {
+                            var trnew = table01.insertRow(-1);
+                            trnew.innerHTML+=`<td><button onclick="loadDoc()">${na.name}</button></td><td>${na.seller}</td><td>${na.auctionEnd}</td><td><img src="${na.image}"> </td>`;
+                           
+                        }
+                    
+
+                    }
+                };
+                //document.getElementById('as').innerHTML+=`</table>`;
+                xhttp.open("POST", "/Auction", true);
+                xhttp.send(); 
+                
+
+            }
+
+            function register(){
+                var name=document.getElementById("name").value;
+                var password=document.getElementById("password").value;
+                var dob=document.getElementById("dob").value;
+
+                var user=new User(name, password, dob);
+
+              
+
+                $.post({
+                  url: "/CreateUser",
+                  data: JSON.stringify(user),
                   success: function(data, status){
                       if(status=="success"){
                           document.getElementById("ret").innerHTML=JSON.stringify(data);
@@ -59,6 +205,20 @@
 
 
             }
+
+                                function loadDoc() {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("ret").innerHTML = this.responseText;
+                        }
+                    };
+                    xhttp.open("GET", "/Item", true);
+                    xhttp.send();
+
+                    document.getElementById('table01').hidden="true";
+                  
+                    }            
         </script>
 </body>
 
