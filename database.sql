@@ -18,5 +18,23 @@ create table `Auction` (
 	`Description` varchar(100) not null unique
 );
 
+drop table if exists `Bids`;
+create table `Bids` (
+	`BidId` integer not null,
+	`BidPrice` integer not null,
+	`BidderId` integer not null
+);	
+
 INSERT INTO Auction (Name, Seller, Startbid, AuctionEnd, Image, Description)
 VALUES ('ora', 'Cecil', '2', '2021-12-31T12:17', 'tht.bmp','egy jo allapotban levo ora')
+
+SELECT Max(BidPrice) FROM Bids Where BidId='2';
+
+SELECT BidId, MAX (BidPrice), BidderId 
+FROM Bids 
+WHERE BidPrice NOT IN (SELECT Max (BidPrice) 
+FROM Bids) AND BidId=@bd.BidId; 
+
+SELECT BidId, Max(BidPrice), BidderId 
+FROM Bids 
+WHERE BidId='2';

@@ -54,8 +54,8 @@ namespace aukcio
                 });                
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute(
-                    name: "UploadUppy",
-                    pattern:"UploadUppy",
+                    name: "Upload",
+                    pattern:"Upload",
                     defaults: new {controller="Upload", action= "OnPostUppy" }
                     );               
             });

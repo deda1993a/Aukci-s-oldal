@@ -29,6 +29,12 @@
    
 }    
 
+#table03{
+  width: 100%;
+   border-collapse: collapse;
+   
+}  
+
 table, td, th {
   border: 1px solid black;
 }
@@ -47,29 +53,40 @@ table, td, th {
         <input type="number" name="dob" id="dob">
 
     </form>
-        <button id="login" onclick="login()">Belepes</button>
-        <button id="register" onclick="register()">Regisztráció</button>
+        <button id="loginb" onclick="login()">Belepes</button>
+        <button id="registerb" onclick="register()">Regisztráció</button>
+        <button id="logoutb" disabled onclick="logout()">Kijelentkezes</button><br><br>
+
+        <button id="backb" disabled onclick="back()">Vissza</button>
+        <button id="newauctionb" disabled onclick="newauction()">Uj aukcio letrehozasa</button>
 
         <p id="ret"></p>
 
-        <div id="drag-drop-area"></div>
+        
         <table id="table01">
             <tr>
                 <th>Targy</th>
                 <th>Elado</th>
                 <th>Veget er</th>
                 <th>Kep</th>
+                <th>Aukcio oldalanak megnyitasa</th>
             </tr>
         </table>
 
         <table id="table02">
             <tr>
-                <th>Targy</th>
-                <th>Elado</th>
-                <th>Veget er</th>
-                <th>Kep</th>
+                <th>Aukcio reszletei</th>
+                
             </tr>
         </table>       
+
+        <table id="table03">
+            <tr>
+                <th>Uj aukcio letrehozasa</th>
+                
+            </tr>
+        </table> 
+                   
 
         <script>
             class User{
@@ -86,63 +103,45 @@ table, td, th {
                     this.password=password;
                     this.dob=parseInt(dob);
                 }
+            }  
+            
+            class Bid{
+                constructor(bidId, bidPrice, bidderId){
+                    this.bidId=parseInt(bidId);
+                    this.bidPrice=parseInt(bidPrice);
+                    this.bidderId=parseInt(bidderId);
+                }
+            }
+
+            
+            class NewAuctions{
+                constructor(name, startbid, image, description, seller, auctionEnd){                  
+                    this.name=name;
+                    this.startbid=parseInt(startbid);
+                    this.image=image;
+                    this.description=description;
+                    this.seller=seller;
+                    this.auctionEnd=auctionEnd;
+                }
             }            
 
-            const { XHRUpload } = Uppy;
-
-/*var uppy = new Uppy.Core()
-
-.use(Uppy.Dashboard, {
-    inline: true,
-    target: `#drag-drop-area`,
-    width: 300,
-    height: 300
-})
-
-.use(Uppy.XHRUpload, {
-    endpoint: `/Upload`,
-    formData: true,
-    fieldName: "files"
-})
-
-uppy.on(`complete`, (result) => {
-    console.log("complete", result.succesfull);
-})   */         
+            var userId;
+            var selectedId;
+            var imagelist;
+            let str=[];
 
             function login(){
+                logoutb.disabled=false;
+                loginb.disabled=true;
+                registerb.disabled=true;
+                newauctionb.disabled=false;
                 var name=document.getElementById("name").value;
                 var password=document.getElementById("password").value;
                 var dob=document.getElementById("dob").value;
                 var user2=new Logged(name, password, dob);
 
-                /*var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {          
-                    // Typical action to be performed when the document is ready:
-                    var lo = JSON.parse(this.responseText);
-
-                        for(na of lo)
-                        {
-                            console.log(`${na.name}`);
-                        }
-
-                    }
-                };
-                xhttp.open("GET", "/LoginUser", true);
-                xhttp.send(); */             
-
-                $.post({
-                  url: "/LoginUser",
-                  data: JSON.stringify(user2),
-                  success: function(data, status){
-                      if(status=="success"){
-                          document.getElementById("ret").innerHTML=JSON.stringify(data);
-                      }
-                  }
-                    , contentType: "application/json"
-                });
-
                 var xhttp = new XMLHttpRequest();
+            
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {          
                     // Typical action to be performed when the document is ready:
@@ -150,13 +149,17 @@ uppy.on(`complete`, (result) => {
 
                         for(na of lo)
                         {
-                            console.log(`${na.name}`);
+                            userId=na.id;
+                            console.log(userId);
                         }
 
                     }
                 };
                 xhttp.open("POST", "/LoginUser", true);
-                xhttp.send();              
+                xhttp.setRequestHeader("Content-Type", "application/json");
+                xhttp.send(JSON.stringify(user2));             
+
+
 
                 var table01=document.getElementById("table01");
                 //document.getElementById('as').innerHTML+=`<table>`;
@@ -169,7 +172,7 @@ uppy.on(`complete`, (result) => {
                         for(na of lo)
                         {
                             var trnew = table01.insertRow(-1);
-                            trnew.innerHTML+=`<td><button onclick="loadDoc()">${na.name}</button></td><td>${na.seller}</td><td>${na.auctionEnd}</td><td><img src="${na.image}"> </td>`;
+                            trnew.innerHTML+=`<td>${na.name}</td><td>${na.seller}</td><td>${na.auctionEnd}</td><td><img src="${na.image}"></td><td><button id="item" value="${na.id}" onclick="loadDoc(${na.id})">Aukcio megnyitasa</button></td>`;
                            
                         }
                     
@@ -206,20 +209,216 @@ uppy.on(`complete`, (result) => {
 
             }
 
-                                function loadDoc() {
+                                function loadDoc(tmp) {
+                                    backb.disabled=false;
                     var xhttp = new XMLHttpRequest();
                     xhttp.onreadystatechange = function() {
                         if (this.readyState == 4 && this.status == 200) {
-                        document.getElementById("ret").innerHTML = this.responseText;
+
+                            var lo = JSON.parse(this.responseText);
+                        
+                        for(na of lo)
+                        {
+                            
+                            if(na.id==tmp){    
+                            selectedId=na.id;                                                               
+                            var trnew = table02.insertRow(-1);
+                            trnew.innerHTML+=`<td>Targy neve: ${na.name}</td>`;
+                            var trnew=table02.insertRow(-1);
+                            trnew.innerHTML+=`<td>Elado neve: ${na.seller}</td>`;
+                            var trnew=table02.insertRow(-1);
+                            trnew.innerHTML+=`<td>Kepek: ${na.image}</td>`;  
+                            var trnew=table02.insertRow(-1);
+                            trnew.innerHTML+=`<td>Veget er: ${na.auctionEnd}</td>`;                          
+                            var trnew=table02.insertRow(-1);
+                            trnew.innerHTML+=`<td>Kikialtasi ar: ${na.startbid} Eur<input type="number" id="price"><button id="bid" onclick="bid(selectedId,price.value,userId)">Licit</button><div id=curvalue></div><div id=leader></div></td>`;   
+                            bid(selectedId,na.startbid,userId)    
+                            }
+                           
+                        }
                         }
                     };
-                    xhttp.open("GET", "/Item", true);
+                    xhttp.open("POST", "/Auction", true);
                     xhttp.send();
 
                     document.getElementById('table01').hidden="true";
                   
-                    }            
+                    }   
+                    
+                    function logout()
+                    {
+                        location.reload();
+                    }
+                    
+                    function bid(bidIdtmp, bidPricetmp, userIdtmp)
+                    {
+                        var bidId=bidIdtmp;
+                        var bidPrice=bidPricetmp;
+                        var bidderId=userIdtmp;
+                        var newbid=new Bid(bidId, bidPrice, bidderId);
+
+                        var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+
+                            var lo = JSON.parse(this.responseText);
+                        
+                        for(na of lo)
+                        {
+                            curvalue.innerHTML="Arfolyam: "+na.bidPrice;
+                            leader.innerHTML="Vezet: "+na.bidderId;
+                        }
+                        }
+                    };
+                    xhttp.open("POST", "/Bid", true);
+                    xhttp.setRequestHeader("Content-Type", "application/json");
+                    xhttp.send(JSON.stringify(newbid));   
+
+              
+                        var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+
+                            var lo = JSON.parse(this.responseText);
+                        
+                        for(na of lo)
+                        {
+                            
+
+                        }
+                        }
+                    };
+                    xhttp.open("POST", "/BidLeader", true);
+                    xhttp.setRequestHeader("Content-Type", "application/json");
+                    xhttp.send(JSON.stringify(newbid));   
+                    }    
+                    
+
+                    function back()
+                    {
+                        var table01=document.getElementById("table01");
+                        for(var i=table01.rows.length-1;i>0;i--)
+                        {
+                            table01.deleteRow(i);
+                        }
+
+                        for(var i=table02.rows.length-1;i>0;i--)
+                        {
+                            table02.deleteRow(i);
+                        }
+
+                        for(var i=table03.rows.length-1;i>0;i--)
+                        {
+                            table03.deleteRow(i);
+                        }
+
+                        table01.hidden=false;
+                        table03.hidden=true;
+                           backb.disabled=true;   
+                           newauctionb.disabled=false;   
+
+                        
+                        //document.getElementById('as').innerHTML+=`<table>`;
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {          
+                            // Typical action to be performed when the document is ready:
+                            var lo = JSON.parse(this.responseText);
+                                
+                                for(na of lo)
+                                {
+                                    var trnew = table01.insertRow(-1);
+                                    trnew.innerHTML+=`<td>${na.name}</td><td>${na.seller}</td><td>${na.auctionEnd}</td><td><img src="${na.image}"></td><td><button id="item" value="${na.id}" onclick="loadDoc(${na.id})">Aukcio megnyitasa</button></td>`;
+                                
+                                }
+                            
+
+                            }
+                        };
+                        //document.getElementById('as').innerHTML+=`</table>`;
+                        xhttp.open("POST", "/Auction", true);
+                        xhttp.send(); 
+
+                    }
+
+                    function newauction()
+                    {
+                        imagelist="";
+                        //var upl=document.getElementById("drag-drop-area").hidden=false;
+                       table01.hidden=true; 
+                       table02.hidden=true;
+                       backb.disabled=false;
+                       newauctionb.disabled=true;
+
+                        var trnew = table03.insertRow(-1);
+                            trnew.innerHTML+=`<td>Targy neve: <input type="text" id="itemname"></td>`;
+                            var trnew=table03.insertRow(-1);
+                            trnew.innerHTML+=`<td height="250"><label for="itemdescription">Leiras:</label><textarea rows="15" cols="50" id="itemdescription"></textarea></td>`;
+                            var trnew=table03.insertRow(-1);
+                            trnew.innerHTML+=`<td>Feltoltendo kepek: <div id="drag-drop-area" ></div> </td>`;
+                            var trnew=table03.insertRow(-1);                            
+                            trnew.innerHTML+=`<td>Veget er: <input type="datetime-local" id="auctionend"></td>`;                          
+                            var trnew=table03.insertRow(-1);
+                            trnew.innerHTML+=`<td>Kikialtasi ar: <input type="number" id="price"> Eur </td>`;   
+                            var trnew=table03.insertRow(-1);
+                            trnew.innerHTML+=`<td><button id="create" onclick="createnew()">Aukciot letrehoz</button></td>`;   
+
+                            
+                            
+                            const { XHRUpload } = Uppy;
+
+                            var uppy = new Uppy.Core()
+
+                            .use(Uppy.Dashboard, {
+                                inline: true,
+                                target: `#drag-drop-area`,
+                                width: 300,
+                                height: 300
+                            })
+
+                            .use(Uppy.XHRUpload, {
+                                endpoint: `/Upload`,
+                                formData: true,
+                                fieldName: "files"
+                            })
+
+                            uppy.on(`complete`, (result) => {
+                            console.log("complete", result.succesfull);
+                            for (let items of str) {
+                                    imagelist=items;
+                                
+                            }
+                            str = [];
+                            
+                                    })       
+                                    console.log(itemdescription.value);                     
+
+                    }
+
+                    function createnew()
+                    {
+                        
+                        var description=document.getElementById("itemdescription").value;
+                        let usr =userId.toString();
+                        //constructor(name, startbid, image, description, seller, auctionEnd)
+                        var nauct=new NewAuctions(itemname.value, price.value, imagelist, description, usr, auctionend.value);
+
+
+                        $.post({
+                        url: "/CreateAuction",
+                        data: JSON.stringify(nauct),
+                        success: function(data, status){
+                            if(status=="success"){
+                                //document.getElementById("ret").innerHTML=JSON.stringify(data);
+                            }
+                        }
+                            , contentType: "application/json"
+                        });                        
+
+                    }
+
         </script>
+        
 </body>
 
 </html>

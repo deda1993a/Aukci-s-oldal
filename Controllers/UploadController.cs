@@ -10,7 +10,7 @@ namespace aukcio.Controllers
 {
     public class UploadController : Controller
     {
-       
+       public string tmp;
         public ActionResult OnPostUppy(List<IFormFile> files)
         {
             Console.WriteLine("public ActionResult OnPostUppy(List<IFormFile> files)");
@@ -20,11 +20,12 @@ namespace aukcio.Controllers
             {
                 if (formFile.Length > 0)
                 {
-                    var filePath = $"Upload/{formFile.FileName}";
+                    var filePath = $"wwwroot/Upload/{formFile.FileName}";
 
                     using var stream = System.IO.File.Create(filePath);
                     
                         formFile.CopyTo(stream);
+                        tmp = formFile.FileName;
                     
                 }
             }
@@ -32,7 +33,7 @@ namespace aukcio.Controllers
             // Process uploaded files
             // Don't rely on or trust the FileName property without validation.
 
-            return Ok(new { count = files.Count, size });
+            return Ok(new {  tmp });
         }
     }
 }

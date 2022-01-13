@@ -70,7 +70,7 @@ namespace aukcio.Controllers
                              });
                     }
 
-                return Ok(result); 
+                return Ok(result);
             }
 
 

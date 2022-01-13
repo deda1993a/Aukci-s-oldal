@@ -14,6 +14,7 @@ namespace aukcio.Controllers
     public class LoginUserController : ControllerBase
     {
 
+        public static UserManager mUserManager=new UserManager();
         static Dictionary<string, string> AuthorizedUsers=new Dictionary<string, string>();
 
         private readonly ILogger<LoginUserController> _logger;
@@ -22,6 +23,7 @@ namespace aukcio.Controllers
 
         public class Logged
         {
+                public int ID{get;set;}
                 public string Name {get;set;}
                  public string Password {get;set;}
                  public int DoB{get;set;}
@@ -33,9 +35,9 @@ namespace aukcio.Controllers
         }
 
             
-            public StatusCodeResult OnPost(Logged user2){
-Console.WriteLine("sikeres");
-            Console.WriteLine(user2.Password);
+            public ActionResult OnPost(Logged user2){
+            //Console.WriteLine("sikeres");
+            Console.WriteLine("nev: "+user2.Name);
             var hasher = new PasswordHasher();
             Hash hs=new Hash();
 
@@ -52,29 +54,43 @@ Console.WriteLine("sikeres");
 
            
             
-            cmd.CommandText=$"select `Name`, `PwHash`,`PwSalt` from `User`;";
+            cmd.CommandText=$"select `ID`, `Name`, `PwHash`,`PwSalt` from `User`;";
 
                     using var reader= cmd.ExecuteReader();
-                        //List<Logged> result=new List<Logged>();
+                        List<Logged> result=new List<Logged>();
                     while(reader.Read())
                     {
-                        hasher.ComputeHash(reader.GetString(2), user2.Password);
-                            //result.Add(new Logged
-                               // {
-                                   hs.Salt=reader.GetString(2);
-                                   hs.Sha=reader.GetString(1);
-
-                                   
-                             if(reader.GetString(0).Equals(user2.Name)==true && hasher.Verify(user2.Password,hs)==true)
-                             {
-                                 Console.WriteLine("oke");
-                             }
+                                   hs.Salt=reader.GetString(3);
+                                   hs.Sha=reader.GetString(2);                        
+                        hasher.ComputeHash(reader.GetString(3), user2.Password);
+                        if(user2.Name.Equals(reader.GetString(1))==true && hasher.Verify(user2.Password,hs)==true){
+                            mUserManager.AddUsers(user2.Name);
+                           
+                            result.Add(new Logged
+                                {
+                                   ID=reader.GetInt32(0),
+                                   Name=reader.GetString(1),
+                                   Password=reader.GetString(2),     
+                                   DoB=reader.GetInt32(3),                                                                                        
+                             
+                    
                             //user.PwHash=reader.GetString(1);
                             //user.DoB=reader.GetInt32(2);                                 
-                                //});
+                                });
+                        }else
+                        {
+                            
+                        }
+                        
                     }
-                            Console.WriteLine(new OkResult());
-                            return new OkResult(); 
+
+                        /*foreach(var tmp in Logged)
+                        {
+
+                        }*/
+                            
+                            return Ok(result);
+
                             
             
             }
