@@ -59,6 +59,7 @@ namespace aukcio.Controllers
 
                     while(reader.Read())
                     {
+                        try{
                         if(bd.BidPrice>reader.GetInt32(1)){
                             change=true;
                             Console.WriteLine("ar: "+reader.GetInt32(1));
@@ -72,10 +73,17 @@ namespace aukcio.Controllers
                                     BidPricetmp=reader.GetInt32(1);
                                     BidderIdtmp=reader.GetInt32(2);
 
+                                    
                                
                              }
+                        }catch{}
                     }
                     reader.Close();
+
+                    if(BidIdtmp==0){
+                        change=true;
+                    }
+
                     if(change==true){
                         
             cmd.CommandText= @"
@@ -105,17 +113,21 @@ namespace aukcio.Controllers
                     using var reader2= cmd2.ExecuteReader();
 
                             while(reader2.Read()){
-                           
+                           try{
                               
                                    BidIdtmp=reader2.GetInt32(0);
                                    BidPricetmp=reader2.GetInt32(1);
                                    BidderIdtmp=reader2.GetInt32(2);
 
-                                             
+                           }catch{
+
+                           }     
                             }
 
 
                     }
+
+
 
                     using var cmd3 = conn.CreateCommand();
 
